@@ -55,9 +55,22 @@ class ViewController: UIViewController, WKNavigationDelegate {
         //wrap the progress view in a bar button item to go into the toolbar
         let progressButton = UIBarButtonItem(customView: progresView)
         
-        
+        // an array that holds all of the toolbar items
         toolbarItems = [progressButton, spacer, refresh]
         navigationController?.isToolbarHidden = false
+        
+        
+        /*
+         
+         KVO ( Key Value Observing )
+         
+         Observer - adding an observer allows us to know when the property of an object
+         changes
+         
+         #keyPath - allows the compiler to check if your code is correct
+         
+         */
+        webView.addObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress), options: .new, context: nil)
         
         let url = URL(string: "https://www.hackingwithswift.com")!
         
