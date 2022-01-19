@@ -12,6 +12,7 @@ import WebKit
 class ViewController: UIViewController, WKNavigationDelegate {
 
     var webView: WKWebView!
+    var progresView: UIProgressView!
     
     override func loadView(){
         
@@ -46,8 +47,16 @@ class ViewController: UIViewController, WKNavigationDelegate {
         //reloads the webview
         let refresh = UIBarButtonItem(barButtonSystemItem: .refresh, target: webView, action: #selector(webView.reload))
         
+        //creates a new UIProgress view instance with a default style
+        progresView = UIProgressView(progressViewStyle: .default)
         
-        toolbarItems = [spacer, refresh]
+        progresView.sizeToFit()
+        
+        //wrap the progress view in a bar button item to go into the toolbar
+        let progressButton = UIBarButtonItem(customView: progresView)
+        
+        
+        toolbarItems = [progressButton, spacer, refresh]
         navigationController?.isToolbarHidden = false
         
         let url = URL(string: "https://www.hackingwithswift.com")!
