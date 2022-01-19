@@ -11,7 +11,7 @@ import WebKit
 // this class is a UIViewController extension that conforms to the WKNavigationDelegate Protocol
 class ViewController: UIViewController, WKNavigationDelegate {
 
-    var webview: WKWebView!
+    var webView: WKWebView!
     
     override func loadView(){
         
@@ -20,19 +20,19 @@ class ViewController: UIViewController, WKNavigationDelegate {
         Creating Webview from the class WKWebView, this is called
         instantiation, we're creating an instance of the WKWebView Class:
          */
-        webview = WKWebView()
+        webView = WKWebView()
         
          /*
          A delegate is a way of writing code, in this scenario our
          delegate(WKWebView) informs us when the view controller changes:
           */
-        webview.navigationDelegate = self
+        webView.navigationDelegate = self
          
         /*
          Assigning view controller "view" to the WKWebView we just
          insantiated:
          */
-        view = webview
+        view = webView
     }
     
     override func viewDidLoad() {
@@ -41,12 +41,21 @@ class ViewController: UIViewController, WKNavigationDelegate {
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Open", style: .plain, target: self, action: #selector(openTapped))
         
+        let spacer = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        
+        //reloads the webview
+        let refresh = UIBarButtonItem(barButtonSystemItem: .refresh, target: webView, action: #selector(webView.reload))
+        
+        
+        toolbarItems = [spacer, refresh]
+        navigationController?.isToolbarHidden = false
+        
         let url = URL(string: "https://www.hackingwithswift.com")!
         
         // wraps our url in a URLRequest, swift doesn't open a url that came from a string, so therefore we have to pass it through a URLRequest function to allow the url to be parsed properly
-        webview.load(URLRequest(url: url))
+        webView.load(URLRequest(url: url))
         // simply allows for a swipe feature to go back or forward depending on the direction.
-        webview.allowsBackForwardNavigationGestures = true
+        webView.allowsBackForwardNavigationGestures = true
     }
 
     @objc func openTapped(){
@@ -57,20 +66,21 @@ class ViewController: UIViewController, WKNavigationDelegate {
         ac.addAction(UIAlertAction(title: "hackingwithswift.com", style: .default, handler: openPage))
         // a cancel button also a subset of the open page button
         ac.addAction(UIAlertAction(title: "cancel", style: .cancel))
-        ac.popoverPresentationController?.barButtonItem = self.navigationItem.rightBarButtonItem
+        ac.popoverPresentationController?.barButtonItem = navigationItem.rightBarButtonItem
         
         present(ac, animated: true)
     }
     
     func openPage(action: UIAlertAction){
-        let url = URL(string: "https://" + action.title!)!
-        webview.load(URLRequest(url: url))
-        
-        func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!){
-            title = webView.title
-        }
-        
+        guard let actionTitle = action.title else { return }
+        guard let url = URL(string: "https://" + actionTitle) else { return }
+        webView.load(URLRequest(url: url))
     }
+    
+    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        title = webView.title
+    }
+    
     
 }
 
